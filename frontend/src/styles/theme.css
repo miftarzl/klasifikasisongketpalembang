@@ -1,0 +1,37 @@
+.glass-panel {
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.input-field {
+  @apply w-full rounded-2xl border border-songket-border bg-white px-4 py-3 text-songket-text-primary shadow-sm transition duration-200 focus:border-songket-gold focus:ring-2 focus:ring-songket-gold/30;
+}
+
+.field-label {
+  @apply mb-2 block text-sm font-semibold text-songket-text-secondary;
+}
+
+.chip-pill {
+  @apply inline-flex items-center rounded-full bg-songket-cream border border-songket-border px-3 py-1 text-xs font-semibold text-songket-text-secondary;
+}
+
+.btn {
+  @apply inline-flex items-center justify-center rounded-2xl bg-songket-cream px-4 py-3 text-sm font-semibold text-songket-text-primary transition duration-200 hover:bg-songket-hover/20 disabled:opacity-60 disabled:cursor-not-allowed border border-transparent;
+}
+
+.btn-sm {
+  @apply rounded-2xl bg-songket-cream px-3 py-2 text-xs font-semibold text-songket-text-secondary transition duration-200 hover:bg-songket-hover/20;
+}
+
+.btn-danger {
+  @apply bg-red-50 border border-red-200 text-red-700 hover:bg-red-100;
+}
+
+.btn-ghost {
+  @apply rounded-2xl border border-songket-border bg-transparent px-4 py-3 text-sm font-semibold text-songket-text-primary hover:bg-songket-cream/80;
+}
+
+.textarea {
+  @apply w-full rounded-2xl border border-songket-border bg-white px-4 py-3 text-songket-text-primary shadow-sm transition duration-200 focus:border-songket-gold focus:ring-2 focus:ring-songket-gold/30 resize-none;
+}

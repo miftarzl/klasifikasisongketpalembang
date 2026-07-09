@@ -1,0 +1,19 @@
+{
+  "state": "completed",
+  "progress": 100,
+  "log": "Training selesai.",
+  "details": {
+    "accuracy": 0.8918918967247009,
+    "loss": 0.5010827779769897,
+    "epochs_trained": 10,
+    "classes": [
+      "Songket Lepus",
+      "Songket Limar",
+      "Songket Polos",
+      "Songket Rakam",
+      "Songket Seler",
+      "Songket Tabur"
+    ],
+    "timestamp": "1782995469.4871912"
+  }
+}

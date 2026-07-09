@@ -1,0 +1,13 @@
+node_modules/
+frontend/node_modules/
+frontend/dist/
+.venv/
+ml_service/.venv/
+ml_service/__pycache__/
+ml_service/model.h5
+ml_service/metrics.json
+backend/uploads/
+uploads/
+*.log
+.DS_Store
+.env
