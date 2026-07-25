@@ -111,35 +111,41 @@ router.post(
           // Read file
           const fileBuffer = await fs.readFile(file.path);
 
-          // Upload ke Supabase Storage
-          const { error: uploadError } = await supabase.storage
-            .from('dataset')
-            .upload(storagePath, fileBuffer, {
-              contentType: file.mimetype,
-              upsert: false,
-            });
+          // Upload ke Supabase Storage dengan fallback lokal jika bucket belum dibuat
+          let imageUrl = null;
+          try {
+            const { error: uploadError } = await supabase.storage
+              .from('dataset')
+              .upload(storagePath, fileBuffer, {
+                contentType: file.mimetype,
+                upsert: true,
+              });
 
-          if (uploadError) {
-            if (isDev) console.error('SUPABASE UPLOAD ERROR DETAIL:', uploadError);
-            throw new Error(`Storage Error: ${uploadError.message || JSON.stringify(uploadError)}`);
+            if (!uploadError) {
+              const { data: urlData } = supabase.storage
+                .from('dataset')
+                .getPublicUrl(storagePath);
+              imageUrl = urlData?.publicUrl;
+            } else {
+              if (isDev) console.warn('Supabase storage notice:', uploadError.message);
+            }
+          } catch (sErr) {
+            if (isDev) console.warn('Supabase storage error, using local fallback:', sErr.message);
           }
 
-          // Ambil public URL
-          const { data: urlData } = supabase.storage
-            .from('dataset')
-            .getPublicUrl(storagePath);
-
-          const imageUrl = urlData?.publicUrl;
+          // Fallback lokal jika Supabase storage tidak tersedia
           if (!imageUrl) {
-            if (isDev) console.error('SUPABASE GETPUBLICURL MISSING:', { storagePath, urlData });
-            throw new Error('Gagal mendapatkan public URL dari Supabase untuk file yang diunggah.');
+            const datasetUploadsDir = path.join(process.cwd(), 'uploads', 'dataset');
+            await fs.mkdir(datasetUploadsDir, { recursive: true });
+            await fs.writeFile(path.join(datasetUploadsDir, uniqueFileName), fileBuffer);
+            imageUrl = `${req.protocol}://${req.get('host')}/uploads/dataset/${uniqueFileName}`;
           }
 
           // Simpan lokal untuk training ML Service
           const localFilePath = path.join(labelDir, uniqueFileName);
           await fs.writeFile(localFilePath, fileBuffer);
 
-          // Insert database
+          // Insert database payload
           supabaseInserts.push({
             image_url: imageUrl,
             label: label,
@@ -156,19 +162,19 @@ router.post(
           });
 
           // Hapus temp file
-          await fs.unlink(file.path);
+          await fs.unlink(file.path).catch(() => {});
         }
 
         // Simpan ke database
         const { data: dbData, error: dbError } = await supabase
-        .from('datasets')
-        .insert(supabaseInserts)
-        .select();
+          .from('datasets')
+          .insert(supabaseInserts)
+          .select();
 
-      if (dbError) {
-        if (isDev) console.error('DB INSERT ERROR:', dbError);
-        throw new Error(`Database Error: ${dbError.message}`);
-      }
+        if (dbError) {
+          if (isDev) console.error('DB INSERT ERROR:', dbError);
+          throw new Error(`Database Error: ${dbError.message}`);
+        }
 
       res.status(201).json({
         message: `${req.files.length} gambar berhasil ditambahkan.`,
