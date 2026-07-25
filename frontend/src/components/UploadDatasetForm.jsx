@@ -181,10 +181,14 @@ const UploadDatasetForm = ({ onUploadSuccess }) => {
       showToast('Pilih file gambar yang valid.', 'error');
       return;
     }
-    const limitedFiles = validFiles.slice(0, 30);
-    const preview = buildPreview(limitedFiles);
-    setFiles(limitedFiles);
-    setPreviewItems(preview);
+
+    setFiles((prevFiles) => {
+      const existingKeys = new Set(prevFiles.map((f) => `${f.name}-${f.size}`));
+      const newUniqueFiles = validFiles.filter((f) => !existingKeys.has(`${f.name}-${f.size}`));
+      const combined = [...prevFiles, ...newUniqueFiles].slice(0, 30);
+      setPreviewItems(buildPreview(combined));
+      return combined;
+    });
   };
 
   const handleDragOver = (event) => {
@@ -341,7 +345,10 @@ const UploadDatasetForm = ({ onUploadSuccess }) => {
                       type="file"
                       accept="image/*"
                       multiple
-                      onChange={(event) => handleFiles(event.target.files)}
+                      onChange={(event) => {
+                        handleFiles(event.target.files);
+                        event.target.value = '';
+                      }}
                       className="hidden"
                       disabled={isUploading}
                     />
