@@ -5,13 +5,6 @@ import { songketDataList } from '../data/songketData';
 import { getSongketGallery, getSongketHeroImage } from '../data/songketImages';
 import useSongketData from '../hooks/useSongketData';
 
-import limarThumb from '../assets/img-songket/Songket Limar/songket_limar_01.jpg';
-import rakamThumb from '../assets/img-songket/Songket Rakam/songket_rakam_01.jpg';
-import polosThumb from '../assets/img-songket/Songket Polos/songket_polos_01.jpg';
-import lepusThumb from '../assets/img-songket/Songket Lepus/songket_lepus_01.jpg';
-import taburThumb from '../assets/img-songket/Songket Tabur/01_songket_tabur_bunga_cengkeh_merah.png';
-import selerThumb from '../assets/img-songket/Songket Seler/specimen_01.png';
-
 const normalizeText = (value) => {
   if (!value) return '';
   return value.toString().trim().toLowerCase().replace(/\s+/g, ' ');
@@ -120,12 +113,12 @@ const SongketExplorer = () => {
 
   const recommendedSongkets = useMemo(() => songketGroups.slice(0, 4), [songketGroups]);
   const manualFeaturedSongkets = useMemo(() => [
-    { slug: 'limar', name: 'Songket Limar', thumb: limarThumb },
-    { slug: 'rakam', name: 'Songket Rakam', thumb: rakamThumb },
-    { slug: 'polos', name: 'Songket Polos', thumb: polosThumb },
-    { slug: 'lepus', name: 'Songket Lepus', thumb: lepusThumb },
-    { slug: 'tabur', name: 'Songket Tabur', thumb: taburThumb },
-    { slug: 'seler', name: 'Songket Seler', thumb: selerThumb }
+    { slug: 'limar', name: 'Songket Limar', thumb: getSongketHeroImage('limar') },
+    { slug: 'rakam', name: 'Songket Rakam', thumb: getSongketHeroImage('rakam') },
+    { slug: 'polos', name: 'Songket Polos', thumb: getSongketHeroImage('polos') },
+    { slug: 'lepus', name: 'Songket Lepus', thumb: getSongketHeroImage('lepus') },
+    { slug: 'tabur', name: 'Songket Tabur', thumb: getSongketHeroImage('tabur') },
+    { slug: 'seler', name: 'Songket Seler', thumb: getSongketHeroImage('seler') }
   ], []);
 
   return (
