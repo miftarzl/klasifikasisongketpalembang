@@ -1,5 +1,6 @@
 const express = require('express');
 const axios = require('axios');
+const bcrypt = require('bcrypt');
 const fs = require('fs');
 const path = require('path');
 const supabase = require('../services/supabaseClient');
@@ -9,6 +10,99 @@ const { authorizeAdmin } = require('../middleware/adminMiddleware');
 const router = express.Router();
 
 router.use(authenticateToken, authorizeAdmin);
+
+const PASSWORD_POLICY = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9\s]).{8,128}$/;
+const BCRYPT_ROUNDS = Number.parseInt(process.env.BCRYPT_ROUNDS, 10) || 10;
+
+/**
+ * PUT /api/admin/change-password
+ * Changes the password of the authenticated admin only. The account id always
+ * comes from the signed JWT, never from the request body.
+ */
+router.put('/change-password', async (req, res) => {
+  try {
+    const { currentPassword, newPassword, confirmPassword } = req.body || {};
+
+    if (
+      typeof currentPassword !== 'string' ||
+      typeof newPassword !== 'string' ||
+      typeof confirmPassword !== 'string' ||
+      !currentPassword ||
+      !newPassword ||
+      !confirmPassword ||
+      currentPassword.length > 128 ||
+      newPassword.length > 128 ||
+      confirmPassword.length > 128
+    ) {
+      return res.status(400).json({ success: false, message: 'Data password tidak valid.' });
+    }
+
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({ success: false, message: 'Konfirmasi password baru tidak sama.' });
+    }
+
+    if (!PASSWORD_POLICY.test(newPassword)) {
+      return res.status(400).json({
+        success: false,
+        message: 'Password baru harus terdiri dari minimal 8 karakter, huruf besar, huruf kecil, angka, dan simbol.',
+      });
+    }
+
+    // Fallback admin credentials are environment-only and cannot be changed
+    // safely or persistently through this API.
+    if (req.user.id === 'fallback-admin') {
+      return res.status(409).json({
+        success: false,
+        message: 'Password akun admin lokal tidak dapat diubah. Konfigurasikan akun admin pada database terlebih dahulu.',
+      });
+    }
+
+    const { data: user, error: fetchError } = await supabase
+      .from('users')
+      .select('id,password,role')
+      .eq('id', req.user.id)
+      .maybeSingle();
+
+    if (fetchError) {
+      console.error('CHANGE PASSWORD FETCH ERROR:', fetchError.message || fetchError);
+      return res.status(503).json({ success: false, message: 'Layanan database sedang tidak tersedia. Silakan coba lagi.' });
+    }
+
+    if (!user || user.role !== 'admin' || !user.password) {
+      return res.status(403).json({ success: false, message: 'Akun admin tidak dapat diverifikasi.' });
+    }
+
+    const currentPasswordMatches = await bcrypt.compare(currentPassword, user.password);
+    if (!currentPasswordMatches) {
+      return res.status(400).json({ success: false, message: 'Password saat ini tidak benar.' });
+    }
+
+    const isSamePassword = await bcrypt.compare(newPassword, user.password);
+    if (isSamePassword) {
+      return res.status(400).json({ success: false, message: 'Password baru tidak boleh sama dengan password saat ini.' });
+    }
+
+    const passwordHash = await bcrypt.hash(newPassword, BCRYPT_ROUNDS);
+    const { error: updateError } = await supabase
+      .from('users')
+      .update({ password: passwordHash })
+      .eq('id', req.user.id);
+
+    if (updateError) {
+      console.error('CHANGE PASSWORD UPDATE ERROR:', updateError.message || updateError);
+      return res.status(503).json({ success: false, message: 'Password belum dapat diperbarui. Silakan coba lagi.' });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Password berhasil diperbarui.',
+      logoutRequired: true,
+    });
+  } catch (error) {
+    console.error('CHANGE PASSWORD ERROR:', error.message || error);
+    return res.status(500).json({ success: false, message: 'Terjadi kesalahan pada server.' });
+  }
+});
 
 const DEFAULT_MODEL_VERSION = 'EfficientNetB3_Advanced';
 const ML_SERVICE_DIR = path.resolve(__dirname, '../../../ml_service');

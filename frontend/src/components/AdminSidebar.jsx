@@ -1,10 +1,11 @@
-import { ChevronRight, Database, Puzzle, Clock3, Sparkles, LogOut, X } from 'lucide-react';
+import { ChevronRight, Database, Puzzle, Clock3, Sparkles, LogOut, Settings, X } from 'lucide-react';
 
 const navItems = [
   { id: 'analytics', label: 'AI Analytics', icon: Sparkles },
   { id: 'dataset', label: 'Dataset', icon: Database },
   { id: 'training', label: 'Training', icon: Puzzle },
   { id: 'history', label: 'History', icon: Clock3 },
+  { id: 'settings', label: 'Settings', icon: Settings },
 ];
 
 export default function AdminSidebar({ activeTab, onSelectTab, onLogout, mobileOpen = false, onClose = () => {} }) {

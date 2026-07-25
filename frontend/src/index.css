@@ -47,6 +47,11 @@
   --radius-default: 1.5rem;
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 @layer base {
   h1, h2, h3, h4, h5, h6 {
     @apply font-heading font-semibold text-songket-text-primary;

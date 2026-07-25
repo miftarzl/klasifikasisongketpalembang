@@ -55,7 +55,13 @@ if (process.env.NODE_ENV !== 'production') {
   app.use((req, res, next) => {
     console.log('================================');
     console.log(`${req.method} ${req.url}`);
-    try { console.log('BODY:', req.body); } catch (e) {}
+    try {
+      const safeBody = { ...(req.body || {}) };
+      ['password', 'currentPassword', 'newPassword', 'confirmPassword'].forEach((key) => {
+        if (Object.prototype.hasOwnProperty.call(safeBody, key)) safeBody[key] = '[REDACTED]';
+      });
+      console.log('BODY:', safeBody);
+    } catch (e) {}
     console.log('================================');
 
     next();

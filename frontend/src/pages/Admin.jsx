@@ -6,6 +6,7 @@ import TrainingPanel from '../components/TrainingPanel';
 import HistoryTable from '../components/HistoryTable';
 import AnalyticsDashboard from '../components/AnalyticsDashboard';
 import AdminSidebar from '../components/AdminSidebar';
+import ChangePasswordForm from '../components/ChangePasswordForm';
 import { Menu } from 'lucide-react';
 
 export default function Admin() {
@@ -66,7 +67,8 @@ export default function Admin() {
     { id: 'analytics', name: 'AI Model Analytics' },
     { id: 'dataset', name: 'Dataset' },
     { id: 'training', name: 'Training' },
-    { id: 'history', name: 'History' }
+    { id: 'history', name: 'History' },
+    { id: 'settings', name: 'Account Settings' }
   ];
 
   const renderTabContent = () => {
@@ -91,6 +93,8 @@ export default function Admin() {
             onClearHistory={handleClearHistory}
           />
         );
+      case 'settings':
+        return <ChangePasswordForm onLogout={handleLogout} />;
       default:
         return <DatasetManager />;
     }

@@ -1,0 +1,13 @@
+.git
+.gitignore
+.vscode
+.agents
+*.log
+ml_service/.venv
+ml_service/venv
+ml_service/__pycache__
+backend/node_modules
+frontend/node_modules
+frontend/dist
+uploads/*
+!uploads/.gitkeep

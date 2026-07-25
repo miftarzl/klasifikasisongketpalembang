@@ -128,10 +128,6 @@ router.post('/login', async (req, res) => {
       passwordMatch = await bcrypt.compare(password, userData.password);
     }
 
-    if (!passwordMatch && email === defaultAdminEmail && password === defaultAdminPassword) {
-      passwordMatch = true;
-    }
-
     if (process.env.NODE_ENV !== 'production') {
       console.log('================================');
       try { console.log('PASSWORD MATCH:', passwordMatch); } catch (e) {}
@@ -181,15 +177,11 @@ router.post('/login', async (req, res) => {
 
   } catch (error) {
 
-    console.error('================================');
-    console.error('AUTH LOGIN ERROR');
-    console.error(error);
-    console.error('================================');
+    console.error('AUTH LOGIN ERROR:', error.message || error);
 
     return res.status(500).json({
       success: false,
-      message: 'Internal server error',
-      error: error.message
+      message: 'Terjadi kesalahan pada server.'
     });
   }
 });
