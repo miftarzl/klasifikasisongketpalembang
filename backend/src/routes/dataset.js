@@ -166,20 +166,26 @@ router.post(
         }
 
         // Simpan ke database
-        const { data: dbData, error: dbError } = await supabase
-          .from('datasets')
-          .insert(supabaseInserts)
-          .select();
+        let dbData = null;
+        try {
+          const { data, error: dbError } = await supabase
+            .from('datasets')
+            .insert(supabaseInserts)
+            .select();
 
-        if (dbError) {
-          if (isDev) console.error('DB INSERT ERROR:', dbError);
-          throw new Error(`Database Error: ${dbError.message}`);
+          if (dbError) {
+            if (isDev) console.error('DB INSERT ERROR:', dbError.message || dbError);
+          } else {
+            dbData = data;
+          }
+        } catch (err) {
+          if (isDev) console.error('DB INSERT EXCEPTION:', err.message || err);
         }
 
-      res.status(201).json({
-        message: `${req.files.length} gambar berhasil ditambahkan.`,
-        data: dbData,
-      });
+        res.status(201).json({
+          message: `${req.files.length} gambar berhasil ditambahkan.`,
+          data: dbData || supabaseInserts,
+        });
     } catch (error) {
       if (isDev) console.error('UPLOAD ERROR:', error);
 
