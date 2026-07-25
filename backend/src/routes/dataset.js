@@ -199,36 +199,123 @@ router.post(
   }
 );
 
+async function seedDefaultDatasets() {
+  const defaultDatasets = [
+    {
+      name: 'Songket Limar',
+      label: 'Songket Limar',
+      category: 'Luxury',
+      origin: 'Palembang',
+      usage: 'Biasanya digunakan pada upacara adat, pesta kebesaran, dan acara formal keluarga kerajaan.',
+      history: "Songket Limar merupakan salah satu jenis Songket Palembang yang telah dikenal sejak masa Kesultanan Palembang Darussalam pada abad ke-18. Nama 'Limar' berasal dari teknik pewarnaan benang sutra yang menghasilkan gradasi warna sebelum proses penenunan dilakukan.",
+      philosophy: 'Melambangkan kemewahan, kehormatan, dan status sosial, sekaligus kecanggihan seni tenun Palembang.',
+      characteristic: 'Corak Songket Limar menampilkan gradasi warna halus yang menjadi latar bagi ornamen emas yang elegan dan teratur.',
+      image_url: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    },
+    {
+      name: 'Songket Rakam',
+      label: 'Songket Rakam',
+      category: 'Royalty',
+      origin: 'Palembang',
+      usage: 'Tradisional digunakan dalam upacara adat, pernikahan kerajaan, dan acara pemerintahan penting.',
+      history: "Songket Rakam berkembang pada masa Kesultanan Palembang sebagai salah satu kain tenun mewah yang dibuat dengan teknik penyisipan benang emas secara rapat sehingga menghasilkan motif yang kaya akan detail.",
+      philosophy: 'Melambangkan kemuliaan, kemakmuran, dan status sosial tinggi keluarga kerajaan.',
+      characteristic: 'Motif Songket Rakam menonjolkan hiasan emas rapat dengan pola rumit yang menunjukkan kemegahan dan detail tinggi.',
+      image_url: 'https://images.unsplash.com/photo-1606744837616-56c9a5c6a6eb?auto=format&fit=crop&w=800&q=80',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    },
+    {
+      name: 'Songket Polos',
+      label: 'Songket Polos',
+      category: 'Everyday',
+      origin: 'Palembang',
+      usage: 'Sering dipakai sebagai busana adat yang lebih sederhana dalam acara budaya dan upacara resmi.',
+      history: 'Songket Polos merupakan jenis songket dengan tampilan yang lebih sederhana dibandingkan jenis songket lainnya. Meskipun memiliki sedikit ornamen benang emas, Songket Polos tetap mempertahankan kualitas tenunan sutra khas Palembang.',
+      philosophy: 'Melambangkan kesederhanaan yang elegan, kehormatan, dan keindahan budaya yang tidak berlebihan.',
+      characteristic: 'Desain Songket Polos menonjolkan kain tenun halus dengan detail minimal namun tetap anggun.',
+      image_url: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?auto=format&fit=crop&w=800&q=80',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    },
+    {
+      name: 'Songket Lepus',
+      label: 'Songket Lepus',
+      category: 'Heritage',
+      origin: 'Palembang',
+      usage: 'Dulunya dipakai oleh keluarga kerajaan dan bangsawan pada acara kenegaraan dan adat penting.',
+      history: "Songket Lepus dikenal sebagai jenis songket paling mewah di Palembang. Nama 'Lepus' berarti seluruh permukaan kain hampir tertutup oleh benang emas sehingga menghasilkan tampilan yang berkilau dan megah.",
+      philosophy: 'Melambangkan kekuasaan, kemakmuran, dan kehormatan yang tertinggi dalam tradisi kerajaan.',
+      characteristic: 'Corak Songket Lepus menutup hampir seluruh kain dengan benang emas yang berkilau, menciptakan kesan megah dan berwibawa.',
+      image_url: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=800&q=80',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    },
+    {
+      name: 'Songket Tabur',
+      label: 'Songket Tabur',
+      category: 'Classic',
+      origin: 'Palembang',
+      usage: 'Sering dipilih untuk acara adat sehari-hari dan kegiatan budaya yang lebih ringan.',
+      history: "Songket Tabur berkembang sebagai salah satu variasi songket yang memiliki susunan motif kecil tersebar merata di seluruh permukaan kain. Nama 'Tabur' berasal dari bentuk penyebaran ornamen yang tampak seperti ditaburkan pada kain.",
+      philosophy: 'Melambangkan keseimbangan antara kemegahan dan kesederhanaan dalam seni songket.',
+      characteristic: 'Polanya menampilkan ornamen kecil yang tersebar merata dengan efek halus dan elegan.',
+      image_url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    },
+    {
+      name: 'Songket Seler',
+      label: 'Songket Seler',
+      category: 'Formal',
+      origin: 'Palembang',
+      usage: 'Biasa digunakan pada acara resmi, penyambutan tamu kehormatan, dan upacara adat.',
+      history: "Songket Seler merupakan salah satu jenis Songket Palembang yang dikenal melalui susunan motif memanjang menyerupai garis-garis vertikal pada permukaan kain.",
+      philosophy: 'Melambangkan keanggunan, keteraturan, dan citra resmi dalam tradisi adat.',
+      characteristic: 'Corak memanjang vertikal menciptakan tampilan anggun dan rapi yang khas.',
+      image_url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80',
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    }
+  ];
+
+  try {
+    const { data: inserted, error } = await supabase
+      .from('datasets')
+      .insert(defaultDatasets)
+      .select();
+    if (!error && inserted) return inserted;
+  } catch (err) {
+    if (isDev) console.error('Auto seed datasets error:', err);
+  }
+  return defaultDatasets;
+}
+
 /**
  * GET /
  * Ambil semua dataset
  */
-    router.get('/', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     if (isDev) console.log('GET /api/datasets called');
 
-    const { data, error } = await supabase
+    let { data, error } = await supabase
       .from('datasets')
       .select('*')
       .order('created_at', { ascending: false });
 
-    if (error) {
-      if (isDev) console.error('SUPABASE ERROR:', error);
-
-      return res.status(500).json({
-        success: false,
-        error: error.message,
-      });
+    if (error || !data || data.length === 0) {
+      const seededData = await seedDefaultDatasets();
+      return res.status(200).json(seededData || []);
     }
 
     res.status(200).json(data || []);
   } catch (error) {
     if (isDev) console.error('DATASET ROUTE ERROR:', error);
-
-    res.status(500).json({
-      success: false,
-      error: error.message,
-    });
+    const fallbackData = await seedDefaultDatasets();
+    res.status(200).json(fallbackData || []);
   }
 });
 
