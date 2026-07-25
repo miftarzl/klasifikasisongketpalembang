@@ -186,7 +186,15 @@ const UploadDatasetForm = ({ onUploadSuccess }) => {
       const existingKeys = new Set(prevFiles.map((f) => `${f.name}-${f.size}`));
       const newUniqueFiles = validFiles.filter((f) => !existingKeys.has(`${f.name}-${f.size}`));
       const combined = [...prevFiles, ...newUniqueFiles].slice(0, 30);
-      setPreviewItems(buildPreview(combined));
+
+      const newPreviews = newUniqueFiles.map((file) => ({
+        id: `${file.name}-${file.size}-${file.lastModified}`,
+        file,
+        url: URL.createObjectURL(file)
+      }));
+
+      setPreviewItems((prevPreviews) => [...prevPreviews, ...newPreviews].slice(0, 30));
+
       return combined;
     });
   };
@@ -359,13 +367,9 @@ const UploadDatasetForm = ({ onUploadSuccess }) => {
                         </div>
                         <p className="mb-1 text-sm font-bold text-songket-text-primary sm:text-base">Drag & drop gambar di sini</p>
                         <p className="text-sm text-songket-text-secondary mb-4">atau klik untuk memilih file</p>
-                        <button
-                          type="button"
-                          onClick={() => document.getElementById('dataset-upload').click()}
-                          className="rounded-xl bg-gradient-to-r from-songket-gold to-songket-hover px-5 py-2.5 text-sm font-bold text-white transition hover:shadow-elegant"
-                        >
+                        <span className="rounded-xl bg-gradient-to-r from-songket-gold to-songket-hover px-5 py-2.5 text-sm font-bold text-white transition hover:shadow-elegant inline-block">
                           Pilih Gambar
-                        </button>
+                        </span>
                       </div>
                     </label>
                   </div>
