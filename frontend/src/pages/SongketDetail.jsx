@@ -268,7 +268,7 @@ const SongketDetail = () => {
                   className="group rounded-[1.75rem] border border-slate-200 bg-white p-4 transition hover:-translate-y-1 hover:shadow-lg"
                 >
                   <img
-                    src={item.image_url || item.image || item.sample?.image_url || placeholderImage}
+                    src={getSongketHeroImage(item.slug) || item.image_url || item.image || item.sample?.image_url || placeholderImage}
                     alt={item.name || item.label}
                     className="h-32 w-full rounded-[1.5rem] object-cover"
                     onError={(event) => {

@@ -61,25 +61,11 @@ class AdvancedBatikInference:
             raise
 
     def enhance_image(self, img_array: np.ndarray) -> np.ndarray:
-        """Improve contrast and sharpness for blurry or low-quality inputs."""
-        try:
-            image_rgb = img_array.astype(np.uint8)
-            lab = cv2.cvtColor(image_rgb, cv2.COLOR_RGB2LAB)
-            l, a, b = cv2.split(lab)
-            clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
-            l = clahe.apply(l)
-            enhanced = cv2.merge((l, a, b))
-            enhanced = cv2.cvtColor(enhanced, cv2.COLOR_LAB2RGB)
-
-            blurred = cv2.GaussianBlur(enhanced, (0, 0), sigmaX=1.0)
-            sharpened = cv2.addWeighted(enhanced, 1.5, blurred, -0.5, 0)
-            return np.clip(sharpened, 0, 255).astype(np.uint8)
-        except Exception as e:
-            logger.warning(f"⚠️  Enhancement skipped due to error: {e}")
-            return img_array
+        """Keep original image untouched for inference to match model training distribution."""
+        return img_array
 
     def preprocess_image(self, image_path: str) -> Optional[np.ndarray]:
-        """Advanced image preprocessing"""
+        """Advanced image preprocessing matching model architecture"""
         try:
             # Load image and resize to model input
             img = image.load_img(image_path, target_size=self.image_size)
@@ -89,15 +75,10 @@ class AdvancedBatikInference:
             if img_array.shape[-1] == 4:  # RGBA
                 img_array = cv2.cvtColor(img_array.astype(np.uint8), cv2.COLOR_RGBA2RGB)
 
-            # Enhance image quality for blurred or low-contrast inputs
-            img_array = self.enhance_image(img_array)
-
             # Add batch dimension
             img_batch = np.expand_dims(img_array, axis=0)
 
-            # Apply EfficientNet preprocessing
-            img_batch = preprocess_input(img_batch)
-
+            # Note: preprocess_input is already included inside the model graph (model.py)
             return img_batch
 
         except Exception as e:
